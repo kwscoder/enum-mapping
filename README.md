@@ -1,1 +1,3 @@
 # enum-mapping
+
+tests
