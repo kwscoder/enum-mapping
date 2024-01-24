@@ -1,6 +1,5 @@
 package com.kws.mybatis.config;
 
-import com.kws.annotation.EnumValueMarker;
 import com.kws.annotation.EnumValueMarkerFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,7 +62,7 @@ public class CustomizeMyBatisConfiguration implements ConfigurationCustomizer {
             }
             try {
                 Class<?> clazz = ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), getClass().getClassLoader());
-                return EnumValueMarkerFinder.hasAnnotation(clazz, EnumValueMarker.class);
+                return EnumValueMarkerFinder.hasAnnotation(clazz);
             } catch (ClassNotFoundException e) {
                 log.error("EnumTypeFilter match failed. Class not found: " + metadataReader.getClassMetadata(), e);
             }

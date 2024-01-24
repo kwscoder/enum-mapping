@@ -17,6 +17,13 @@ public class EnumValueMarkerFinder {
 //    public static final Class<? extends Annotation> ANNOTATION_CLASS = EnumValueMarker.class;
     public static final Class<? extends Annotation> ANNOTATION_CLASS = JsonValue.class;
 
+    public static boolean hasAnnotation(Class<?> clazz) {
+        try {
+            return hasAnnotation(clazz, ANNOTATION_CLASS);
+        } catch (Exception e) {
+            return false;
+        }
+    }
     public static boolean hasAnnotation(Class<?> clazz, Class<? extends Annotation> annotationClass) {
         try {
             return findAnnotatedFields(clazz, annotationClass).size() > 0;
