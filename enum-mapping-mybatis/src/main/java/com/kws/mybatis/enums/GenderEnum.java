@@ -1,7 +1,6 @@
 package com.kws.mybatis.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.kws.annotation.EnumValueMarker;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

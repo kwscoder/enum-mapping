@@ -38,7 +38,9 @@ public class FastJsonEnumDeserializer implements ObjectDeserializer {
                     return enumConstant;
                 }
             }
+            log.warn("==> deserialized failed. {}", EnumValueMarkerFinder.formatMsg(type, name, value));
         } catch (Exception e) {
+            log.error("==> deserialized failed.", e);
             throw new JSONException("getEnumValue error", e);
         }
         return null;

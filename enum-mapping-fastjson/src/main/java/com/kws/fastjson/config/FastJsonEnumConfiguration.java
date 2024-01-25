@@ -5,7 +5,6 @@ import com.alibaba.fastjson.parser.deserializer.ObjectDeserializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.spi.Module;
-import com.kws.annotation.EnumValueMarker;
 import com.kws.annotation.EnumValueMarkerFinder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -20,7 +19,6 @@ import javax.annotation.PostConstruct;
 @Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass({ObjectSerializer.class, ObjectDeserializer.class})
-//@ConditionalOnMissingClass({"com.alibaba.fastjson.serializer.ObjectSerializer", "com.alibaba.fastjson.parser.deserializer.ObjectDeserializer"})
 public class FastJsonEnumConfiguration {
     public FastJsonEnumConfiguration() {
         log.info("****** constructor ******");
@@ -60,7 +58,7 @@ public class FastJsonEnumConfiguration {
 
         @Override
         public ObjectDeserializer createDeserializer(ParserConfig config, Class type) {
-            if (!type.isEnum() || !EnumValueMarkerFinder.hasAnnotation(type, EnumValueMarker.class)) {
+            if (!type.isEnum() || !EnumValueMarkerFinder.hasAnnotation(type)) {
                 return null;
             }
             return new FastJsonEnumDeserializer();
@@ -68,7 +66,7 @@ public class FastJsonEnumConfiguration {
 
         @Override
         public ObjectSerializer createSerializer(SerializeConfig config, Class type) {
-            if (!type.isEnum() || !EnumValueMarkerFinder.hasAnnotation(type, EnumValueMarker.class)) {
+            if (!type.isEnum() || !EnumValueMarkerFinder.hasAnnotation(type)) {
                 return null;
             }
             return new FastJsonEnumSerializer();
