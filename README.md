@@ -1,8 +1,11 @@
 # enum-mapping
+自定义枚举类型fastjson序列化、反序列化 + 自定义mybatis通用枚举类型解析器（TypeHandler）
 
 ## enum-mapping-annotations
+自定义枚举类型注解
 
 ## enum-mapping-fastjson
+自定义fastjson枚举类型通用序列化反序列化
 
 ## enum-mapping-mybatis
 ### MyBatis自定义通用枚举类解析器（自动注册通用枚举类解析器）
