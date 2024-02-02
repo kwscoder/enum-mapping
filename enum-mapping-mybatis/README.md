@@ -3,7 +3,7 @@
 一般在保存数据时只是想将枚举类型的code值存入到数据库中，查询时希望能自动根据code值映射出对应的枚举对象出现，而不是查询出code值然后再手动根据code值找到对应的枚举对象的转换
 
 ## 官方注册方案
-官方方案：<https://mybatis.org/mybatis-3/zh_CN/configuration.html#typeHandlers>
+官方方案：<https://mybatis.org/mybatis-3/zh_CN/configuration.html#typeHandlers>  
 **无法对所有枚举类型进行通用注册（有可能是没找到正确的方式，如果有，恳请大家指导）**
 
 
