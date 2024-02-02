@@ -2,11 +2,12 @@
 在使用`MyBatis`的过程中，我们经常会使用到枚举类型的数据，
 一般在保存数据时只是想将枚举类型的code值存入到数据库中，查询时希望能自动根据code值映射出对应的枚举对象出现，而不是查询出code值然后再手动根据code值找到对应的枚举对象的转换
 
-## 官方注册 无法对所有枚举类型进行通用注册（有可能是没找到正确的方式，如果有，恳请大家指导）
+## 官方注册方案
 官方方案：<https://mybatis.org/mybatis-3/zh_CN/configuration.html#typeHandlers>
+**无法对所有枚举类型进行通用注册（有可能是没找到正确的方式，如果有，恳请大家指导）**
 
 
-## 自动注册
+## 自动注册方案
 实现思路如下：
 1. 自定义注解用于标识枚举字段`code`值（可以使用Jackson自带的`@JsonValue`注解，也可以单独自定义注解），注解标识的字段类型非固定类型，可为`Integer`、`Long`、`String`等其他基本类型或其他类型（其他类型请多测试）
 2. 自定义枚举类型处理器`MyBatisEnumTypeHandler`继承自`org.apache.ibatis.type.BaseTypeHandler`，用于处理枚举类型数据的保存和查询使用
