@@ -1,4 +1,4 @@
-package com.kws.fastjson.config;
+package com.kws.mvc.fastjson.config.enums;
 
 import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.ObjectSerializer;
@@ -10,8 +10,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
 /**
- * @author kongweishen
- * @date 2023-12-29 18:33
+ * @author kws
+ * @date 2024-01-18 21:03
  */
 @Slf4j
 public class FastJsonEnumSerializer implements ObjectSerializer {
@@ -26,7 +26,7 @@ public class FastJsonEnumSerializer implements ObjectSerializer {
         try {
             Field field = EnumValueMarkerFinder.find(object.getClass());
             Object val = field.get(object);
-            log.info("==> serialize {}#{}【{}】", fieldType.getTypeName(), field.getName(), val);
+            log.info("==> serialize {}#{}【{}】", fieldType != null ? fieldType.getTypeName() : object.getClass().getName(), field.getName(), val);
             serializer.write(val);
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);

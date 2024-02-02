@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author kongweishen
+ * @author kws
  * @date 2024-01-12 18:12
  */
 public class EnumValueMarkerFinder {

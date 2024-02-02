@@ -25,6 +25,9 @@
         <module>enum-mapping-anntations</module>
         <module>enum-mapping-fastjson</module>
         <module>enum-mapping-mybatis</module>
+        <module>enum-mapping-mvc-jackson</module>
+        <module>enum-mapping-mvc-fastjson</module>
+        <module>enum-mapping-common</module>
     </modules>
 
     <dependencyManagement>

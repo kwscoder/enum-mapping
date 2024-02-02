@@ -1,8 +1,9 @@
 package com.kws.fastjson;
 
 import com.alibaba.fastjson.JSON;
-import com.kws.fastjson.entity.User;
-import com.kws.fastjson.enums.GenderEnum;
+import com.kws.common.entity.User;
+import com.kws.common.enums.GenderEnum;
+import com.kws.fastjson.config.enums.FastJsonEnumConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,8 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
- * @author kongweishen
- * @date 2024-01-25 12:52
+ * @author kws
+ * @date 2024-01-21 12:52
  */
 @Slf4j
 @RunWith(SpringRunner.class)
@@ -30,7 +31,7 @@ public class FastJsonTest {
     }
 
     /**
-     * 注释掉配置类{@link com.kws.fastjson.config.FastJsonEnumConfiguration}中这行代码 => // @Configuration(proxyBeanMethods = false)
+     * 注释掉配置类{@link FastJsonEnumConfiguration}中这行代码 => // @Configuration(proxyBeanMethods = false)
      * 未启用自定义fastjson枚举类型序列化反序列化，序列化结果如下:
      */
     @Test
@@ -39,7 +40,7 @@ public class FastJsonTest {
     }
 
     /**
-     * 打开配置类{@link com.kws.fastjson.config.FastJsonEnumConfiguration}中这行代码 => @Configuration(proxyBeanMethods = false)
+     * 打开配置类{@link FastJsonEnumConfiguration}中这行代码 => @Configuration(proxyBeanMethods = false)
      * 启用自定义fastjson枚举类型序列化反序列化后，序列化结果如下:
      */
     @Test

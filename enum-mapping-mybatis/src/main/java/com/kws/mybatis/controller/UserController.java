@@ -1,6 +1,6 @@
 package com.kws.mybatis.controller;
 
-import com.kws.mybatis.entity.User;
+import com.kws.common.entity.User;
 import com.kws.mybatis.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * @author kongweishen
- * @date 2024-01-24 13:56
+ * @author kws
+ * @date 2024-01-14 13:56
  */
 @RestController
 @RequestMapping("/user")

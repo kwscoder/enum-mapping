@@ -17,20 +17,20 @@ import java.util.Objects;
 import java.util.Set;
 
 /**
- * @author kongweishen
- * @date 2024-01-11 16:45
+ * @author kws
+ * @date 2024-01-14 16:45
  */
 @Slf4j
 @Component
 public class CustomizeMyBatisConfiguration implements ConfigurationCustomizer {
-    /*
-     可改成读取配置文件包路径.
-     注意：
-        如果需要从配置文件读取，直接通过@Value注解注入不会生效，
-        需要实现EnvironmentAware接口，通过EnvironmentAware接口获取配置
+    /**
+     * 可改成读取配置文件包路径.
+     * 注意：
+     * 如果需要从配置文件读取，直接通过@Value注解注入不会生效，
+     * 需要实现EnvironmentAware接口，通过EnvironmentAware接口获取配置
      */
-    private static final String BASE_SCAN_PACKAGE = "com.kws.mybatis";
-    public static final String ENUM_PACKAGE = "java.lang.Enum";
+    private static final String BASE_SCAN_PACKAGE = "com.kws";
+    public static final String ENUM_TYPE = "java.lang.Enum";
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -53,11 +53,19 @@ public class CustomizeMyBatisConfiguration implements ConfigurationCustomizer {
         }
     }
 
+    /**
+     * 自定义枚举类型过滤器 <p>
+     * 1.过滤枚举类型 <p>
+     * 2.枚举类型字段必须打了枚举类型注解（或自定义注解） <p>
+     *
+     * @author kws
+     * @date 2024-01-14 17:19
+     */
     public static class EnumTypeFilter implements TypeFilter {
         @Override
         public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
             String typeName = metadataReader.getClassMetadata().getSuperClassName();
-            if (!ENUM_PACKAGE.equals(typeName)) {
+            if (!ENUM_TYPE.equals(typeName)) {
                 return false;
             }
             try {

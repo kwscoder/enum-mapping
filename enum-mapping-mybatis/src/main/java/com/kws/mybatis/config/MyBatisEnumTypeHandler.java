@@ -12,8 +12,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * @author kongweishen
- * @date 2024-01-12 16:04
+ * @author kws
+ * @date 2024-01-14 16:04
  */
 @Slf4j
 public class MyBatisEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {

@@ -1,4 +1,4 @@
-package com.kws.fastjson.config;
+package com.kws.mvc.fastjson.config.enums;
 
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.parser.DefaultJSONParser;
@@ -14,8 +14,8 @@ import java.lang.reflect.Type;
 import java.util.Optional;
 
 /**
- * @author kongweishen
- * @date 2023-12-29 18:33
+ * @author kws
+ * @date 2024-01-18 21:03
  */
 @Slf4j
 public class FastJsonEnumDeserializer implements ObjectDeserializer {
@@ -32,6 +32,7 @@ public class FastJsonEnumDeserializer implements ObjectDeserializer {
 
             PropertyDescriptor propertyDescriptor = BeanUtils.getPropertyDescriptor((Class<?>) type, name);
             Method readMethod = Optional.ofNullable(propertyDescriptor).map(PropertyDescriptor::getReadMethod).orElseThrow(() -> new RuntimeException("获取属性" + name + "失败，缺少get方法"));
+
             for (T enumConstant : ((Class<T>) type).getEnumConstants()) {
                 Object codeValue = readMethod.invoke(enumConstant);
                 if (value.equals(codeValue)) {

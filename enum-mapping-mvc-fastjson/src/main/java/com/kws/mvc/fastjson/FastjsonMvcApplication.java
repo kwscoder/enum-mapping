@@ -1,15 +1,15 @@
-package com.kws.fastjson;
+package com.kws.mvc.fastjson;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * @author kws
- * @date 2024/1/15 12:43
+ * @date 2024/2/3 11:07
  */
 @SpringBootApplication
-public class FastjsonEnumMappingApp {
+public class FastjsonMvcApplication {
     public static void main(String[] args) {
-        SpringApplication.run(FastjsonEnumMappingApp.class, args);
+        SpringApplication.run(FastjsonMvcApplication.class, args);
     }
 }

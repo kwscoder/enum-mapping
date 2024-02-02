@@ -1,12 +1,12 @@
-package com.kws.mybatis.enums;
+package com.kws.common.enums;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 /**
- * @author kongweishen
- * @date 2024-01-15 13:46
+ * @author kws
+ * @date 2024-01-24 21:46
  */
 @Getter
 @RequiredArgsConstructor
@@ -20,4 +20,13 @@ public enum GenderEnum {
     private final Integer code;
     private final String name;
     private final String desc;
+
+    @Override
+    public String toString() {
+        return "GenderEnum{" +
+                "code=" + code +
+                ", name='" + name + '\'' +
+                ", desc='" + desc + '\'' +
+                '}';
+    }
 }
