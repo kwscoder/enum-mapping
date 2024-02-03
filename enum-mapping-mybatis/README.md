@@ -25,26 +25,89 @@
        }
    }
    ```
-5. 获取所有需要注册到通用枚举类型处理器中的枚举类
-   1. 在 **`customize`** 方法中通过`Spring`框架中`ClassPathScanningCandidateComponentProvider`扫描器在`classpath`下扫描出指定包下的枚举类
-   2. 自定义一个类型过滤器`com.kws.mybatis.config.CustomizeMyBatisConfiguration.EnumTypeFilter`，用于在类路径扫描时，过滤出需要处理的枚举类（1.枚举类型 2.枚举类型中含有自定义注解字段）
-   ```java
-    public static class EnumTypeFilter implements TypeFilter {
-        @Override
-        public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
-            String typeName = metadataReader.getClassMetadata().getSuperClassName();
-            if (!ENUM_TYPE.equals(typeName)) {
-                return false;
-            }
-            try {
-                Class<?> clazz = ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), getClass().getClassLoader());
-                return EnumValueMarkerFinder.hasAnnotation(clazz);
-            } catch (ClassNotFoundException e) {
-                log.error("EnumTypeFilter match failed. Class not found: " + metadataReader.getClassMetadata(), e);
-            }
-            return false;
-        }
-    }
-   ```
-   3. 过滤出需要处理的枚举类后，通过`TypeHandlerRegistry`将当前枚举类型使用通用的枚举类型处理器注册到类型处理器中
-   4. 具体注册代码在：[CustomizeMyBatisConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FCustomizeMyBatisConfiguration.java) _customize()_ 方法中可以看到
+   5. 获取所有需要注册到通用枚举类型处理器中的枚举类
+      1. 在 **`customize`** 方法中通过`Spring`框架中`ClassPathScanningCandidateComponentProvider`扫描器在`classpath`下扫描出指定包下的枚举类
+      2. 自定义一个类型过滤器`com.kws.mybatis.config.CustomizeMyBatisConfiguration.EnumTypeFilter`，用于在类路径扫描时，过滤出需要处理的枚举类（1.枚举类型 2.枚举类型中含有自定义注解字段）
+         ```java
+          public static class EnumTypeFilter implements TypeFilter {
+              @Override
+              public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
+                  String typeName = metadataReader.getClassMetadata().getSuperClassName();
+                  if (!ENUM_TYPE.equals(typeName)) {
+                      return false;
+                  }
+                  try {
+                      Class<?> clazz = ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), getClass().getClassLoader());
+                      return EnumValueMarkerFinder.hasAnnotation(clazz);
+                  } catch (ClassNotFoundException e) {
+                      log.error("EnumTypeFilter match failed. Class not found: " + metadataReader.getClassMetadata(), e);
+                  }
+                  return false;
+              }
+          }
+         ```
+      3. 过滤出需要处理的枚举类后，通过`TypeHandlerRegistry`将当前枚举类型使用通用的枚举类型处理器注册到类型处理器中
+      4. 具体注册代码如下
+         ```java
+         @Slf4j
+         @Component
+         public class CustomizeMyBatisConfiguration implements ConfigurationCustomizer {
+         /**
+         * 可改成读取配置文件包路径.
+         * 注意：
+         * 如果需要从配置文件读取，直接通过@Value注解注入不会生效，
+         * 需要实现EnvironmentAware接口，通过EnvironmentAware接口获取配置
+         */
+         private static final String BASE_SCAN_PACKAGE = "com.kws";
+         public static final String ENUM_TYPE = "java.lang.Enum";
+
+             @Override
+             @SuppressWarnings({"unchecked", "rawtypes"})
+             public void customize(Configuration configuration) {
+                 ClassPathScanningCandidateComponentProvider classPathScanning = new ClassPathScanningCandidateComponentProvider(false);
+                 classPathScanning.addIncludeFilter(new EnumTypeFilter());
+                 Set<BeanDefinition> enumsBeanDefinitions = classPathScanning.findCandidateComponents(BASE_SCAN_PACKAGE);
+                 if (CollectionUtils.isEmpty(enumsBeanDefinitions)) {
+                     return;
+                 }
+
+                 for (BeanDefinition bd : enumsBeanDefinitions) {
+                     try {
+                         log.info("====== register TypeHandler for Enum ======【{}】", bd.getBeanClassName());
+                         Class clazz = ClassUtils.forName(Objects.requireNonNull(bd.getBeanClassName()), getClass().getClassLoader());
+                         configuration.getTypeHandlerRegistry().register(clazz, new MyBatisEnumTypeHandler<>(clazz));
+                     } catch (Exception e) {
+                         log.error("====== Register Mybatis TypeHandler Failed. Enum:【{}】", bd.getBeanClassName(), e);
+                     }
+                 }
+             }
+
+             /**
+              * 自定义枚举类型过滤器 <p>
+              * 1.过滤枚举类型 <p>
+              * 2.枚举类型字段必须打了枚举类型注解（或自定义注解） <p>
+              *
+              * @author kws
+              * @date 2024-01-14 17:19
+              */
+             public static class EnumTypeFilter implements TypeFilter {
+                 @Override
+                 public boolean match(MetadataReader metadataReader, MetadataReaderFactory metadataReaderFactory) {
+                     String typeName = metadataReader.getClassMetadata().getSuperClassName();
+                     if (!ENUM_TYPE.equals(typeName)) {
+                         return false;
+                     }
+                     try {
+                         Class<?> clazz = ClassUtils.forName(metadataReader.getClassMetadata().getClassName(), getClass().getClassLoader());
+                         return EnumValueMarkerFinder.hasAnnotation(clazz);
+                     } catch (ClassNotFoundException e) {
+                         log.error("EnumTypeFilter match failed. Class not found: " + metadataReader.getClassMetadata(), e);
+                     }
+                     return false;
+                 }
+             }
+         }
+         ```
+      5. 完整代码：  
+         [CustomizeMyBatisConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FCustomizeMyBatisConfiguration.java)  
+         [MyBatisEnumTypeHandler.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FMyBatisEnumTypeHandler.java)
