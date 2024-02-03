@@ -11,7 +11,68 @@
 实现思路如下：
 1. 自定义注解用于标识枚举字段`code`值（可以使用Jackson自带的`@JsonValue`注解，也可以单独自定义注解），注解标识的字段类型非固定类型，可为`Integer`、`Long`、`String`等其他基本类型或其他类型（其他类型请多测试）
 2. 自定义枚举类型处理器 [MyBatisEnumTypeHandler.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FMyBatisEnumTypeHandler.java) 继承自`org.apache.ibatis.type.BaseTypeHandler`，用于处理枚举类型数据的保存和查询使用
-3. 接下来，怎么将自定义的枚举类型处理器用于处理所有枚举类型的数据？
+   ```java
+   @Slf4j
+   public class MyBatisEnumTypeHandler<E extends Enum<E>> extends BaseTypeHandler<E> {
+   
+       private final Class<E> type;
+       public MyBatisEnumTypeHandler(Class<E> type) {
+           this.type = type;
+       }
+   
+       @Override
+       public void setNonNullParameter(PreparedStatement ps, int i, E parameter, JdbcType jdbcType) throws SQLException {
+           try {
+               Field field = EnumValueMarkerFinder.find(type);
+               Object val = field.get(parameter);
+               if (jdbcType == null) {
+                   ps.setObject(i, val);
+               } else {
+                   ps.setObject(i, val, jdbcType.TYPE_CODE);
+               }
+           } catch (IllegalAccessException e) {
+               throw new RuntimeException(e);
+           }
+       }
+   
+       @Override
+       public E getNullableResult(ResultSet rs, String columnName) throws SQLException {
+           Object s = rs.getObject(columnName);
+           return findTargetEnum(s, type);
+       }
+   
+       @Override
+       public E getNullableResult(ResultSet rs, int columnIndex) throws SQLException {
+           Object s = rs.getObject(columnIndex);
+           return findTargetEnum(s, type);
+       }
+   
+       @Override
+       public E getNullableResult(CallableStatement cs, int columnIndex) throws SQLException {
+           Object s = cs.getObject(columnIndex);
+           return findTargetEnum(s, type);
+       }
+   
+       private E findTargetEnum(Object val, Class<E> type) {
+           if (val == null) {
+               return null;
+           }
+           try {
+               Field field = EnumValueMarkerFinder.find(type);
+               for (E enumConstant : type.getEnumConstants()) {
+                   Object o = field.get(enumConstant);
+                   if (val.equals(o)) {
+                       return enumConstant;
+                   }
+               }
+           } catch (IllegalAccessException e) {
+               log.error("Handle enum failed...", e);
+           }
+           return null;
+       }
+   }
+   ```
+3. **接下来，怎么将自定义的枚举类型处理器用于处理所有枚举类型的数据？**
 4. 为了实现所有的枚举都自动注册通用类型转换器，这里需要自定义一个配置类 [CustomizeMyBatisConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FCustomizeMyBatisConfiguration.java) 并实现`org.mybatis.spring.boot.autoconfigure.ConfigurationCustomizer`接口 
    1. 实现该接口后，可以获取到`org.apache.ibatis.session.Configuration`配置类，
    2. 使用`Configuration`配置类获取到`TypeHandlerRegistry`注册器，
@@ -108,6 +169,7 @@
              }
          }
          ```
-      5. 完整代码：  
+      5. 完整代码已发布github：  
+         [github: enum-mapping](https://github.com/kwscoder/enum-mapping)  
          [CustomizeMyBatisConfiguration.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FCustomizeMyBatisConfiguration.java)  
          [MyBatisEnumTypeHandler.java](src%2Fmain%2Fjava%2Fcom%2Fkws%2Fmybatis%2Fconfig%2FMyBatisEnumTypeHandler.java)
