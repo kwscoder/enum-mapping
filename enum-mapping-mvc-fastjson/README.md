@@ -312,4 +312,4 @@
     ```
 13. 完整代码已发布github
     [github: enum-mapping](https://github.com/kwscoder/enum-mapping)
-    模块为：`enum-mapping-mvc-fastjson`
+    模块：`enum-mapping-mvc-fastjson`
