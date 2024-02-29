@@ -13,11 +13,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Slf4j
 @Configuration(proxyBeanMethods = false)
-public class MyMvcConfiguration implements WebMvcConfigurer {
+public class WebMvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
         registry.addConverterFactory(new CustomConverterFactory());
-        WebMvcConfigurer.super.addFormatters(registry);
     }
 }
